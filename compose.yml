@@ -1,44 +1,7 @@
-#volumes:
-#  nextcloud:
-#  db:
-
 services:
-#  db:
-#    image: postgres
-#    container_name: postgres
-#    restart: always
-#    shm_size: 128mb
-#    volumes:
-#      - db:/var/lib/postgresql/data
-#    environment:
-#      - POSTGRES_ROOT_PASSWORD=postgres
-#      - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_DB=nextcloud
-#      - POSTGRES_USER=nextcloud
-
-#  nextcloud:
-#    image: nextcloud
-#    container_name: nextcloud
-#    restart: always
-#    ports:
-#      - 8600:80
-#    links:
-#      - db
-#    volumes:
-#      - nextcloud:/var/www/html
-#    environment:
-#      - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_DB=nextcloud
-#      - POSTGRES_USER=nextcloud
-#      - POSTGRES_HOST=db
-#      - NEXTCLOUD_TRUSTED_DOMAINS=nurul.online nextcloud.nurul.online
-
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
-    # environment:
-    #   PUID: 1000 -- optional, your user id
-    #   PGID: 1000 -- optional, your group id
     ports:
       - 3000:3000
     volumes:

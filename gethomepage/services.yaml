@@ -10,25 +10,7 @@
         # server: my-docker # The docker server that was configured
         # container: portainer
 
-#- Personal:
-#    - Nextcloud:
-#        icon: nextcloud.png
-#        href: "https://nextcloud.nurul.online"
-#        description: Storage and Backups
-
 - Monitoring:
-    - Grafana:
-        icon: grafana.png
-        href: "https://grafana.nurul.online"
-        description: Metrics Dashboards
-    - Prometheus:
-        icon: prometheus.png
-        href: "https://prometheus.nurul.online"
-        description: Metrics Collection
-    - Kubernetes Dashboard:
-        icon: kubernetes-dashboard.png
-        href: "https://k8sdashboard.nurul.online"
-        description: Dashboard for Kubernetes
     - Pi-Hole:
         icon: pi-hole.png
         href: "https://pihole.nurul.online/admin"
