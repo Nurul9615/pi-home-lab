@@ -1,0 +1,59 @@
+version: "3"
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    # line above must be uncommented to allow external containers to connect.
+    # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    ports:
+      - 8888:8888/tcp # HTTP proxy
+      - 8388:8388/tcp # Shadowsocks
+      - 8388:8388/udp # Shadowsocks
+      # Other services
+      # qBittorrent
+      - 8080:8080
+      # Other containers that are being routed via the container where you still want access the resources like web ui on local network
+      #- PORT:PORT
+    volumes:
+      - ./config/gluetun:/gluetun
+    environment:
+      # I specify the PUID and PGID but this is optional (default is 1000,1000), description from Wiki "User ID/Group ID to run as non root and for ownership of files written"
+      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
+      - VPN_SERVICE_PROVIDER=custom
+      - VPN_TYPE=wireguard
+      # Wireguard:
+      - WIREGUARD_PUBLIC_KEY=xxx
+      - WIREGUARD_PRIVATE_KEY=xxx
+      - WIREGUARD_ADDRESSES=xxx
+      - VPN_ENDPOINT_IP=xxx
+      - VPN_ENDPOINT_PORT=51820
+      - VPN_DNS_ADDRESS=10.2.0.1
+      - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_PROVIDER=protonvpn
+      - VPN_PORT_FORWARDING_UP_COMMAND=/bin/sh -c 'wget -O- --retry-connrefused --post-data "json={\"listen_port\":{{PORTS}}}" http://127.0.0.1:8080/api/v2/app/setPreferences 2>&1'
+      # Timezone for accurate log times
+      - TZ=Europe/London # Change to your TZ
+      # Server list updater
+      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
+      - UPDATER_PERIOD=24h
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=10
+      - TZ=Europe/London
+      - WEBUI_PORT=8080
+    volumes:
+      - ./config/qbittorrent:/config
+      #once qBittorrent is running, set the downloads folder to /downloads in the web ui settings.
+      #- /home/nurul/qbittorrent-complete-downloads:/downloads
+      - /volume1/media/qbittorrent-downloads:/downloads
+      #path to incomplete downloads folder where downloads are temporarily stored while downloading. on NVME drive for faster speeds. optional.
+      #- /volume2/sharedNVME/qbittorrent-incomplete-downloads:/incomplete-downloads
+    network_mode: service:gluetun  # routes qBittorrent traffic through your VPN configured in gluetun

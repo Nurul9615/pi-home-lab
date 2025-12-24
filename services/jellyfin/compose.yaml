@@ -1,0 +1,17 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: always
+    devices:
+      - /dev/dri:/dev/dri  # Integrated graphics
+    environment:
+      PUID: 1000
+      PGID: 10
+    volumes:
+      - ./config/jellyfin:/config
+      - ./cache/jellyfin:/cache
+      - /volume1/media:/media #Library location
+    ports:
+      - 9096:8096/TCP
+    network_mode: "bridge"
