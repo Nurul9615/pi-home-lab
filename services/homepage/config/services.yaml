@@ -1,0 +1,54 @@
+- Infrastructure:
+    - Tailscale:
+        icon: tailscale.png
+        href: https://login.tailscale.com/admin/machines
+        description: VPN Mesh
+        widget:
+          type: tailscale
+          deviceid: xx
+          key: tskey-api-xx
+
+    - Pi-hole:
+        icon: pi-hole.png
+        href: http://pihole/admin
+        description: DNS Adblock
+        widget:
+          type: pihole
+          url: http://pihole
+          key: xx
+          version: 6
+
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: http://ugreen:9096
+        description: Media Server
+        widget:
+          type: jellyfin
+          url: http://ugreen:9096
+          key: xx
+
+    - Immich:
+        icon: immich.png
+        href: http://ugreen:2283
+        description: Photo Backup
+        widget:
+          type: immich
+          url: http://ugreen:2283
+          key: xx
+          version: 2
+
+- Downloads:
+    - qBittorrent:
+        icon: qbittorrent.png
+        href: http://ugreen:8080
+        description: Torrent Client
+        widget:
+          type: qbittorrent
+          url: http://ugreen:8080
+          username: admin
+          password: xx
+
+    - Gluetun:
+        icon: gluetun.png
+        description: VPN Tunnel
