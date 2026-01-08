@@ -6,6 +6,5 @@
 
 | Service     | Port |
 | ----------- | ---- |
-| Portainer   | 9000 |
-| Pi-Hole     | 5335 |
-| Gethomepage | 3000 |
+| Pi-Hole     | 80   |
+| Homepage    | 3000 |
