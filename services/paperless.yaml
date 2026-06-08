@@ -1,0 +1,79 @@
+services:
+  broker:
+    image: redis:7
+    container_name: paperless-redis
+    restart: unless-stopped
+    volumes:
+      - /volume2/docker/paperless/redis:/data
+
+  db:
+    image: postgres:16
+    container_name: paperless-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: changethis
+    volumes:
+      - /volume2/docker/paperless/postgres:/var/lib/postgresql/data
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    container_name: paperless-gotenberg
+    restart: unless-stopped
+    command:
+      - gotenberg
+      - --chromium-disable-javascript=true
+
+  tika:
+    image: apache/tika:latest
+    container_name: paperless-tika
+    restart: unless-stopped
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+      - gotenberg
+      - tika
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - /volume2/docker/paperless/data:/usr/src/paperless/data
+      - /volume2/docker/paperless/media:/usr/src/paperless/media
+      - /volume2/docker/paperless/export:/usr/src/paperless/export
+      - /volume2/docker/paperless/consume:/usr/src/paperless/consume
+
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+
+      PAPERLESS_DBENGINE: postgresql
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBNAME: paperless
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: changethis
+
+      PAPERLESS_URL: http://NAS-IP:8000
+
+      PAPERLESS_TIME_ZONE: Europe/London
+
+      PAPERLESS_OCR_LANGUAGE: eng
+
+      PAPERLESS_TIKA_ENABLED: 1
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+
+      USERMAP_UID: 1000
+      USERMAP_GID: 10
+
+      PAPERLESS_ADMIN_USER: admin
+      PAPERLESS_ADMIN_PASSWORD: changethis
+      PAPERLESS_ADMIN_MAIL: email-address
+
+      PAPERLESS_CONSUMER_POLLING: 10
+      PAPERLESS_CONSUMER_RECURSIVE: true
